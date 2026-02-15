@@ -3,3 +3,6 @@
 __pycache__/
 **/__pycache__/
 *.pyc
+code_project1/synthetic_send/demo_data/
+code_project1/synthetic_send/demo_state/
+code_project1/synthetic_send/demo_exchange/

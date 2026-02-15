@@ -1,0 +1,48 @@
+{
+  "system": {
+    "num_clients": 3
+  },
+  "paths": {
+    "data_dir": "demo_data/Components_3",
+    "state_dir": "demo_state",
+    "client_input_dir": "demo_exchange/server_to_clients",
+    "client_output_dir": "demo_exchange/clients_to_server",
+    "server_input_dir": "demo_exchange/clients_to_server",
+    "server_output_dir": "demo_exchange/server_to_clients"
+  },
+  "global": {
+    "gamma_g": 0.005,
+    "lambda_g": 0.0005
+  },
+  "local": {
+    "eta_l": [
+      0.0005,
+      0.0003,
+      0.0003
+    ],
+    "eta_g": [
+      0.0005,
+      0.7,
+      0.7
+    ],
+    "lambda_l": [
+      500.0,
+      0.5,
+      0.5
+    ]
+  },
+  "initialization": {
+    "theta_mean": 0.5,
+    "theta_std": 0.01,
+    "theta_seed": 42,
+    "amn_mean": 0.8,
+    "amn_std": 0.075,
+    "amn_seed": 7
+  },
+  "runtime": {
+    "client_grad_file_template": "grad_client_{client_id}.csv",
+    "client_state_file_template": "state_client_{client_id}.csv",
+    "server_emit_next_t": true
+  }
+}
+

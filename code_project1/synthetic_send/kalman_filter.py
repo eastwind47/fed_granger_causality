@@ -1,17 +1,8 @@
 import numpy as np
-import pandas as pd
-import scipy.linalg
-import matplotlib.pyplot as plt
 
 # Importing csv file
 def load_csv_as_matrix(file_path):
-    # Read the CSV file using pandas
-    df = pd.read_csv(file_path, header = None)
-    
-    # Convert the DataFrame to a NumPy matrix
-    matrix = df.to_numpy()
-    
-    return matrix
+    return np.loadtxt(file_path, delimiter=",")
 
 
 class KalmanFilter:

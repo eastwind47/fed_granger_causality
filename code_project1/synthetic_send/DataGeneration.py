@@ -198,45 +198,23 @@ def check_persistence_of_excitation(u):
 
 
 if __name__ == "__main__":
-    # Define parameters
-    N = 2  # Number of clients
-    D = 8  # Dimension of data per client
-    P = 2  # Dimension of states per client
-    T = 30000  # Total time horizon
+    # Demo defaults for federated setup.
+    N = 3
+    D = 8
+    P = 2
+    T = 10000
 
-    # Define variances for each client
-    obs_noise = [0.001, 0.001]  # Variances for client 0 and client 1
+    obs_noise = (0.0001 * np.ones(N)).tolist()
+    proc_noise = (0.001 * np.ones(N)).tolist()
+    dependencies = [(0, 1), (1, 2), (2, 0)]
 
-    # Define process noises for each client
-    proc_noise = [0.001, 0.001]  # Process noise for client 0 and client 1
-
-    # Define directed dependencies (e.g., 0→1)
-    dependencies = [(0, 1)]
-
-    # Process noise covariance (same across all clients) (Choose None for no process noise)
     Q = [proc * np.eye(P) for proc in proc_noise]
-
-    # Generate R blocks automatically based on variances
     R = [var * np.eye(D) for var in obs_noise]
 
-    # Define windows of mean-shifts (optional)
-    windows = [
-        (1000, 2000,  5.0),
-        (3000, 5000, -3.0),
-        (7000, 9000,  2.0),
-        (12000, 18000, 1.0),
-        (25000, 26000, -2.0)
-    ]
-
-    # Build input u
+    # In fed_granger_causality experiments, B and u_t are zero.
     n_x = N * P
-
     u = np.zeros((T, n_x))
-    for t0, t1, mag in windows:
-        u[t0:t1, :] = mag
-
-    # Identity routing (scaled)
-    B = 0.1 * np.eye(n_x)
+    B = np.zeros((n_x, n_x))
 
     # Generate LTI data
     x, y, A, B, C, Qmat, Rmat = generate_lti_data(
@@ -278,8 +256,8 @@ if __name__ == "__main__":
     # plt.tight_layout()
     # plt.show()
 
-    # Custom base path for saving files
-    base_path = "/Users/home/Documents/naz/research_codes/uncert_prop/synthetic_exp/sigma_Amn_set1/Amn_10e2"  # Replace with your desired path
+    # Save under repository-local demo_data folder.
+    base_path = os.path.join(os.path.dirname(__file__), "demo_data")
     os.makedirs(base_path, exist_ok=True)  # Ensure the base path exists
 
     # Directory structure
@@ -352,7 +330,6 @@ if __name__ == "__main__":
 
     # print("Is the system satisfying the PE condition?", is_pe)
     # print("Eigenvalues of the input Gramian:", eigenvalues)
-
 
 
 
