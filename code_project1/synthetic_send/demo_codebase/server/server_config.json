@@ -1,0 +1,29 @@
+{
+  "system": {
+    "num_clients": 3
+  },
+  "paths": {
+    "data_dir": "../../demo_data/Components_3",
+    "server_state_dir": "../../demo_server_state"
+  },
+  "network": {
+    "host": "0.0.0.0",
+    "port": 12345,
+    "backlog": 8,
+    "recv_timeout_sec": 120
+  },
+  "global": {
+    "gamma_g": 0.005,
+    "lambda_g": 0.0005
+  },
+  "initialization": {
+    "amn_mean": 0.8,
+    "amn_std": 0.075,
+    "amn_seed": 7
+  },
+  "runtime": {
+    "num_rounds": 10000,
+    "persist_server_bundle": true,
+    "send_stop_message": true
+  }
+}

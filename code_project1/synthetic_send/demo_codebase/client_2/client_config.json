@@ -1,0 +1,20 @@
+{
+  "client": {
+    "client_id": 2
+  },
+  "network": {
+    "server_host": "127.0.0.1",
+    "server_port": 12345,
+    "recv_timeout_sec": 120
+  },
+  "local": {
+    "eta_l": 0.0003,
+    "eta_g": 0.7,
+    "lambda_l": 0.5
+  },
+  "initialization": {
+    "theta_mean": 0.5,
+    "theta_std": 0.01,
+    "theta_seed": 43
+  }
+}

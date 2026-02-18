@@ -2,6 +2,7 @@ import numpy as np
 from scipy.linalg import block_diag, eigvals
 import matplotlib.pyplot as plt
 import os
+from kalman_filter import KalmanFilter
 
 def make_positive_block(P, rng, eps=1e-3):
     """
@@ -197,6 +198,35 @@ def check_persistence_of_excitation(u):
     return is_pe, eigenvalues
 
 
+def run_local_dkf(Ai, Ci, Qi, Ri, yi, x0i):
+    """
+    Run local DKF and return row-per-time predicted/estimated states.
+    Shapes:
+      yi: (T, d_i)
+      returns X_dkf_pred, X_dkf_est: (T, p_i)
+    """
+    p_i = Ai.shape[0]
+    t_horizon = yi.shape[0]
+
+    # Keep DKF setup consistent with local learner usage.
+    bi = np.zeros((p_i, p_i))
+    p0i = Qi.copy()
+    x0_col = np.asarray(x0i, dtype=float).reshape(-1, 1)
+    dkf = KalmanFilter(Ai, bi, Ci, Qi, Ri, p0i, x0_col)
+
+    x_dkf_pred = np.zeros((t_horizon, p_i))
+    x_dkf_est = np.zeros((t_horizon, p_i))
+
+    for t in range(t_horizon):
+        dkf.predict(np.zeros((p_i, 1)))
+        x_dkf_pred[t, :] = dkf.get_state().reshape(-1)
+        y_t = yi[t : t + 1, :].T
+        dkf.update(y_t)
+        x_dkf_est[t, :] = dkf.get_state().reshape(-1)
+
+    return x_dkf_pred, x_dkf_est
+
+
 if __name__ == "__main__":
     # Demo defaults for federated setup.
     N = 3
@@ -296,6 +326,9 @@ if __name__ == "__main__":
         x0i = x[0:1, i*P:(i+1)*P]
         # print("x0i shape = ", x0i.shape)
 
+        # Local DKF trajectories saved as row-per-time to match X.csv layout.
+        x_dkf_pred, x_dkf_est = run_local_dkf(Ai, Ci, Qi, Ri, yi, x0i)
+
         # Save CSVs
         np.savetxt(os.path.join(comp_dir, "X.csv"), xi, delimiter=",")
         np.savetxt(os.path.join(comp_dir, "Y.csv"), yi, delimiter=",")
@@ -305,6 +338,8 @@ if __name__ == "__main__":
         np.savetxt(os.path.join(comp_dir, "Q.csv"), Qi, delimiter=",")
         np.savetxt(os.path.join(comp_dir, "R.csv"), Ri, delimiter=",")
         np.savetxt(os.path.join(comp_dir, "x0.csv"), x0i, delimiter=",")
+        np.savetxt(os.path.join(comp_dir, "X_dkf_pred.csv"), x_dkf_pred, delimiter=",")
+        np.savetxt(os.path.join(comp_dir, "X_dkf_est.csv"), x_dkf_est, delimiter=",")
 
     # Print A matrix
     np.set_printoptions(precision=3, suppress=True)
@@ -330,6 +365,5 @@ if __name__ == "__main__":
 
     # print("Is the system satisfying the PE condition?", is_pe)
     # print("Eigenvalues of the input Gramian:", eigenvalues)
-
 
 
